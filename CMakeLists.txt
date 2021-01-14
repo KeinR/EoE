@@ -3,7 +3,7 @@ project(eoe VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/keinr/LoE")
+set(CMAKE_PROJECT_HOMEPAGE_URL "https://github.com/keinr/EoE")
 
 if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -44,6 +44,8 @@ target_link_libraries(eoe
     stdc++fs
     Threads::Threads
 )
+
+file(COPY data DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 # Configuration
 

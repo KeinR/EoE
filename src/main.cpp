@@ -1,6 +1,7 @@
 #include <iostream>
 #include <exception>
 #include <memory>
+#include <filesystem>
 
 #include "lib/glfw.h"
 #include "core/Context.h"
@@ -8,6 +9,7 @@
 
 #define EXIT_OK 0
 #define EXIT_ERR 1
+
 
 static void glfwErrCallback(int code, const char *desc);
 
@@ -35,6 +37,8 @@ int main(int argc, char **argv) {
     }
 
     try {
+        namespace fs = std::filesystem;
+        fs::current_path(fs::path(argv[0]).parent_path());
         Game game(c);
         game.start();
     } catch (std::exception &e) {

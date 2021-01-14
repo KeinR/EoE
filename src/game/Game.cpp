@@ -3,6 +3,7 @@
 #include "../lib/opengl.h"
 
 Game::Game(const ctx_t &c): c(c) {
+    font = std::make_shared<Font>("data/fonts/consolas18.bff");
 }
 
 void Game::start() {
