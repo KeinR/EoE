@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.13)
-project(loe VERSION 0.1 LANGUAGES CXX C)
+project(eoe VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,32 +16,33 @@ else()
     add_compile_options(-Wall)
 endif()
 
-# file(GLOB_RECURSE sources src/*.cpp)
+file(GLOB_RECURSE gsources src/*.cpp)
 set(sources 
-    src/main.cpp
+    ${gsources}
 )
 set(libs
     deps/GLAD/glad.c
     deps/stb/stb_image.c
-    deps/stb/stb_vorbis.c
-    deps/dr/dr_wav.c
 )
 
-add_executable(loe ${sources} ${libs})
+add_executable(eoe ${sources} ${libs})
 
 find_package(glm REQUIRED)
 find_package(glfw3 3.2 REQUIRED)
+find_package(Threads REQUIRED)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-target_include_directories(Danzun
+target_include_directories(eoe
     PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/include"
     PUBLIC "deps"
     PUBLIC "${GLFW_INCLUDE_DIRS}"
     PUBLIC "${GLM_INCLUDE_DIRS}"
 )
 
-target_link_libraries(Danzun
+target_link_libraries(eoe
     glfw
     stdc++fs
+    Threads::Threads
 )
 
 # Configuration
@@ -53,7 +54,7 @@ configure_file(src/cmake/config.h.in include/cmake/config.h)
 # Packaging
 
 install(
-    TARGETS loe
+    TARGETS eoe
     RUNTIME DESTINATION bin
 )
 
@@ -79,7 +80,7 @@ if (UNIX)
         set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS ON)
         set(CPACK_DEBIAN_PACKAGE_GENERATE_SHLIBS_POLICY ">=")
         set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "${CMAKE_PROJECT_HOMEPAGE_URL}")
-        set(CPACK_DEBIAN_FILE_NAME "LoE-${DANZUN_VERSION}-${DISTRO}-${CMAKE_SYSTEM_PROCESSOR}.deb")
+        set(CPACK_DEBIAN_FILE_NAME "EoE-${LOE_VERSION}-${DISTRO}-${CMAKE_SYSTEM_PROCESSOR}.deb")
 
         set(CPACK_GENERATOR ${CPACK_GENERATOR} DEB)
 
