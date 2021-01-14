@@ -16,7 +16,7 @@ void err::raise() {
         if (critical) {
             throw std::runtime_error(msg);
         } else {
-            std::cerr << msg;
+            std::cerr << msg << '\n';
         }
     }
 }

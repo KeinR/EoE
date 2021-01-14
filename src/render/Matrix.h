@@ -28,7 +28,7 @@ public:
 
     bool reflectAcrossYAxis;
 
-    Matrix(float x, float y, float pivotXOfs, float pivotYOfs, float width, float height, float rotation, bool reflectAcrossYAxis);
+    Matrix(float x = 0, float y = 0, float pivotXOfs = 0, float pivotYOfs = 0, float width = 10, float height = 10, float rotation = 0, bool reflectAcrossYAxis = false);
 
     glm::mat4 getModel(bool flipY);
 

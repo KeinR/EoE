@@ -9,6 +9,7 @@ Textbox::Textbox(Context &c, const font_t &font):
     lineGap(0),
     width(0)
 {
+    words.emplace_back();
 }
 
 Context *Textbox::getContext() {
@@ -48,21 +49,24 @@ void Textbox::render() {
     functions_t::iterator fit = functions.begin();
     functions_t::iterator fend = functions.end();
     --fend;
+    fit->second->init(*c);
     CharRend::renderObj obj;
     obj.font = font;
     obj.height = font->getHeight();
+    obj.c = c;
     int x = margin;
     int y = margin;
     for (std::size_t i = 0; i < words.size(); i++) {
         if (fit->first == i && fit != fend) {
             ++fit;
+            fit->second->init(*c);
         }
         std::pair<std::string, int> &s = words[i];
         if (width != 0 && obj.x + s.second >= width) {
             x = margin;
             y += font->getHeight() + lineGap;
         }
-        obj.word = s.second;
+        obj.word = s.first;
         obj.x = x;
         obj.y = y;
         obj.width = s.second;
