@@ -22,6 +22,8 @@ public:
     void show();
     void hide();
 
+    bool keyPressed(int e);
+
     void getMousePos(float &x, float &y);
     void getSize(int &w, int &h);
 

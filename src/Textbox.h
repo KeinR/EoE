@@ -41,6 +41,7 @@ public:
     void pushFunc(const func_t &f);
     void pushFunc(const CharRendF::render_t &func);
 
+    // Main thread
     void render();
 };
 

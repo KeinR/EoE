@@ -14,7 +14,7 @@ void Script::wait(int millis) {
     while (end > clock_tp::now());
 }
 
-void Script::start() {
+void Script::beginScript() {
     thread = std::thread(&Script::script, this);
 }
 

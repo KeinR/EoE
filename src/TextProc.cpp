@@ -4,8 +4,17 @@
 
 #include "Script.h"
 #include "Window.h"
+#include "core/Context.h"
+#include "core/keys.h"
 
-TextProc::TextProc(const output_t &out): out(out) {
+TextProc::TextProc(Context &c):
+    TextProc(std::make_shared<Textbox>(c))
+{
+}
+TextProc::TextProc(const output_t &out):
+    out(out),
+    charCooldownMillis(0)
+{
 }
 
 void TextProc::sleep(int millis) {
@@ -13,13 +22,21 @@ void TextProc::sleep(int millis) {
 }
 
 void TextProc::waitEnter() {
-    // TODO
-    // while (!c.getWindow().keyPressed(Context::key::ENTER)) {
-        // sleep(1);
-    // }
+    while (!out->getContext()->keyPressed(key::ENTER)) {
+        sleep(1);
+    }
+}
+
+void TextProc::setCharCooldown(int millis) {
+    charCooldownMillis = millis;
 }
 
 TextProc &TextProc::operator<<(const Textbox::func_t &func) {
+    out->pushFunc(func);
+    return *this;
+}
+
+TextProc &TextProc::operator<<(const CharRendF::render_t &func) {
     out->pushFunc(func);
     return *this;
 }
@@ -44,4 +61,16 @@ TextProc &TextProc::operator<<(float v) {
     return *this;
 }
 
+TextProc &TextProc::operator<<(command c) {
+    switch (c) {
+        case enter:
+            waitEnter();
+            break;
+    }
+    return *this;
+}
+
+void TextProc::render() {
+    out->render();
+}
 

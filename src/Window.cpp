@@ -40,6 +40,10 @@ void Window::swapBuffers() {
     glfwSwapBuffers(handle);
 }
 
+bool Window::keyPressed(int e) {
+    return glfwGetKey(handle, e) == GLFW_PRESS;
+}
+
 void Window::getMousePos(float &x, float &y) {
     double bx, by;
     glfwGetCursorPos(handle, &bx, &by);

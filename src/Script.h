@@ -11,7 +11,7 @@ public:
 
     static void wait(int millis);
 
-    void start();
+    void beginScript();
 
     virtual void script() = 0;
 };

@@ -19,6 +19,12 @@ Context::Context():
     window->makeCurrent();
 }
 
+bool Context::keyPressed(key k) {
+    lockGuard_t g(inputLock);
+
+    keys_t::iterator it = keys.find(k);
+    return it != keys.end() && it->second;
+}
 
 void Context::useShader(const shader_t &shader) {
     if (usedShader != shader) {
@@ -51,4 +57,11 @@ void Context::setViewport(int width, int height) {
 }
 
 
+void Context::processInput() {
+    Window::pollEvents();
+
+    lockGuard_t g(inputLock);
+
+    keys[key::ENTER] = window->keyPressed(GLFW_KEY_ENTER);
+}
 
