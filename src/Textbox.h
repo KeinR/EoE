@@ -8,6 +8,7 @@
 
 #include "Font.h"
 #include "CharRend.h"
+#include "CharRendF.h"
 
 class Context;
 
@@ -17,19 +18,17 @@ public:
     typedef std::shared_ptr<CharRend> func_t;
     typedef std::map<std::size_t, func_t> functions_t;
 private:
-    typedef std::shared_ptr<Font> font_t;
 
     Context *c;
-    font_t font;
     int margin;
     int lineGap;
     int width;
-    std::vector<std::pair<std::string, int>> words;
+    std::string text;
     functions_t functions;
     std::mutex lock;
 
 public:
-    Textbox(Context &c, const font_t &font);
+    Textbox(Context &c);
 
     Context *getContext();
 
@@ -37,7 +36,10 @@ public:
     void setLineGap(int g);
 
     void pushChar(char c);
+    void pushString(const std::string &str);
+    void prepare(std::size_t count);
     void pushFunc(const func_t &f);
+    void pushFunc(const CharRendF::render_t &func);
 
     void render();
 };
