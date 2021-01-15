@@ -6,7 +6,6 @@
 #include "../../render/Matrix.h"
 #include "../../render/Mesh.h"
 
-// #define memb(FUNC) std::bind(&Begin::FUNC, this, std::placeholders::_1)
 
 scn::Begin::Begin(Game &game):
     game(&game),
@@ -38,21 +37,25 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 void scn::Begin::script() {
     typedef TextProc prc;
     typedef CharRendF::render_t func_t;
+    typedef Textbox::event_t event_t;
     proc.setCharCooldown(50);
 
     Game::shader_t &shader = game->getShaders().text;
     Context &c = game->getContext();
 
+#define memb(FUNC) std::bind(&Begin::FUNC, this, std::placeholders::_1)
+
     // TODO: Find a way of doing this that isn't so moronic
 #define COLOR(RED, GREEN, BLUE, ALPHA)\
-    [this, &shader, &c](CharRend::renderObj &obj)->void{\
+    [&shader, &c]()->void{\
         c.useShader(shader);\
         shader->set4f("color", RED, BLUE, GREEN, ALPHA);\
-        this->renderNorm(obj);\
     };
 
-    func_t white = COLOR(0.8, 0.8, 0.8, 1);
-    func_t red = COLOR(1, 0.2, 0.2, 1);
+    event_t white = COLOR(0.8, 0.8, 0.8, 1);
+    event_t red = COLOR(1, 0.2, 0.2, 1);
+
+    proc << memb(renderNorm);
 
     proc << white << "There was once a time when " << red << "GIANTS" << white <<
     "\\ ruled the land.\nAnd it was not all that great..." << prc::input;

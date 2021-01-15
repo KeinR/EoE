@@ -5,6 +5,7 @@
 #include <memory>
 #include <map>
 #include <mutex>
+#include <functional>
 
 #include "Font.h"
 #include "CharRend.h"
@@ -16,7 +17,9 @@ class Textbox {
 public:
     typedef std::lock_guard<std::mutex> lockGuard_t;
     typedef std::shared_ptr<CharRend> func_t;
+    typedef std::function<void()> event_t;
     typedef std::map<std::size_t, func_t> functions_t;
+    typedef std::multimap<std::size_t, func_t> events_t;
 private:
 
     Context *c;
@@ -25,6 +28,10 @@ private:
     int wrapWidth;
     std::string text;
     functions_t functions;
+    // The last of the rendering functions, NOT
+    // events!
+    func_t lastFunc;
+    events_t events;
     std::mutex lock;
 
 public:
@@ -41,6 +48,7 @@ public:
     void prepare(std::size_t count);
     void pushFunc(const func_t &f);
     void pushFunc(const CharRendF::render_t &func);
+    void pushEvent(const event_t &e);
 
     // Main thread
     void render();

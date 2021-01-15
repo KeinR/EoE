@@ -1,5 +1,7 @@
 #include "Textbox.h"
 
+#include <stdexcept>
+
 #include "core/Context.h"
 
 Textbox::Textbox(Context &c):
@@ -47,10 +49,25 @@ void Textbox::prepare(std::size_t count) {
 void Textbox::pushFunc(const func_t &f) {
     lockGuard_t g(lock);
     functions[text.size()] = f;
+    lastFunc = f;
 }
 
 void Textbox::pushFunc(const CharRendF::render_t &func) {
     pushFunc(std::make_shared<CharRendF>(func));
+}
+
+void Textbox::pushEvent(const event_t &e) {
+    lockGuard_t g(lock);
+    if (!lastFunc) {
+        throw std::logic_error("No functions pushed");
+    }
+    func_t wFunc = lastFunc;
+    functions[text.size()] = std::make_shared<CharRendF>(
+        [e, wFunc](CharRend::renderObj &obj)->void{
+            e();
+            wFunc->render(obj);
+        }
+    );
 }
 
 void Textbox::render() {

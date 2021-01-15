@@ -55,6 +55,11 @@ TextProc &TextProc::operator<<(const CharRendF::render_t &func) {
     return *this;
 }
 
+TextProc &TextProc::operator<<(const Textbox::event_t &e) {
+    out->pushEvent(e);
+    return *this;
+}
+
 TextProc &TextProc::operator<<(const std::string &str) {
     for (char c : str) {
         *this << c;

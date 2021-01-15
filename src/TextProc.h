@@ -34,6 +34,7 @@ public:
     // Change render func
     TextProc &operator<<(const Textbox::func_t &func);
     TextProc &operator<<(const CharRendF::render_t &func);
+    TextProc &operator<<(const Textbox::event_t &e);
     TextProc &operator<<(const std::string &str);
     TextProc &operator<<(char c);
     TextProc &operator<<(int v);
