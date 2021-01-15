@@ -11,12 +11,16 @@ class TextProc {
 public:
     typedef std::shared_ptr<Textbox> output_t;
     enum command {
-        enter
+        input
     };
 private:
     Script *parent;
     output_t out;
     int charCooldownMillis;
+    bool seekingInput;
+    bool lastState;
+
+    bool hasInput();
 public:
     // Construxts own textbox
     TextProc(Script &parent, Context &c);
@@ -24,13 +28,14 @@ public:
 
     output_t getTextbox();
 
-    void waitEnter();
+    void waitInput();
     void setCharCooldown(int millis);
     
     // Change render func
     TextProc &operator<<(const Textbox::func_t &func);
     TextProc &operator<<(const CharRendF::render_t &func);
     TextProc &operator<<(const std::string &str);
+    TextProc &operator<<(char c);
     TextProc &operator<<(int v);
     TextProc &operator<<(float v);
     // Cusotm command

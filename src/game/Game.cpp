@@ -13,7 +13,7 @@
 #include "../core/error.h"
 #include "scenes/Begin.h"
 
-Game::Game(const ctx_t &c): c(c) {
+Game::Game(const ctx_t &c): c(c), endFlag(false) {
     fonts.consolas = std::make_shared<Font>("data/fonts/couriernew20.bff");
     shaders.text = std::make_shared<Shader>(*c,
         "data/shaders/text.vert",
@@ -43,6 +43,8 @@ void Game::script() {
     std::shared_ptr<scn::Begin> begin = std::make_shared<scn::Begin>(*this);
     setScene(begin);
     begin->script();
+
+    endFlag.store(true);
 }
 
 Context &Game::getContext() {
@@ -71,7 +73,7 @@ void Game::start() {
 
     beginScript();
 
-    while (!c->getWindow().shouldClose()) {
+    while (!c->getWindow().shouldClose() && !endFlag.load()) {
         int winWidth, winHeight;
         c->getWindow().getFBSize(winWidth, winHeight);
         c->setViewport(winWidth, winHeight);

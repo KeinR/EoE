@@ -4,7 +4,6 @@
 #include <cmath>
 #include <fstream>
 #include <exception>
-#include <iostream>
 
 #include "core/error.h"
 #include "core/debug.h"

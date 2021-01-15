@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <mutex>
+#include <atomic>
 
 #include "../core/Context.h"
 #include "../Font.h"
@@ -33,6 +34,8 @@ private:
     scene_t scene;
     scene_t nextScene;
     std::mutex sceneLock;
+
+    std::atomic_bool endFlag;
 
     void syncScene();
 

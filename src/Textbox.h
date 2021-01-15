@@ -30,7 +30,7 @@ private:
 public:
     Textbox(Context &c);
 
-    Context *getContext();
+    Context &getContext();
 
     void setMargin(int m);
     void setLineGap(int g);

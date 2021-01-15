@@ -33,6 +33,7 @@ public:
     void setTitle(const char *str);
 
     bool shouldClose();
+    void setShouldClose(bool t);
 
     static void pollEvents();
 };

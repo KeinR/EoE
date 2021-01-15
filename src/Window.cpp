@@ -79,6 +79,10 @@ bool Window::shouldClose() {
     return glfwWindowShouldClose(handle);
 }
 
+void Window::setShouldClose(bool v) {
+    glfwSetWindowShouldClose(handle, v);
+}
+
 
 // Static members
 

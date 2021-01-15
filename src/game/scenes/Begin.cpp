@@ -43,7 +43,7 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 void scn::Begin::script() {
     typedef TextProc prc;
     proc.setCharCooldown(50);
-    proc << memb(renderNorm) << "I really kinda' like cheese for some reason.\nThere's just something about it..." << prc::enter;
+    proc << memb(renderNorm) << "I really kinda' like cheese for some reason.\\\nThere's just something about it..." << prc::input;
 }
 
 void scn::Begin::render() {

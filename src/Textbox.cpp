@@ -10,8 +10,8 @@ Textbox::Textbox(Context &c):
 {
 }
 
-Context *Textbox::getContext() {
-    return c;
+Context &Textbox::getContext() {
+    return *c;
 }
 
 void Textbox::setMargin(int m) {

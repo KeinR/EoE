@@ -15,8 +15,12 @@ Context::Context():
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
-    window = std::make_unique<Window>("title", 400, 400);
+    window = std::make_unique<Window>("[no title]", 400, 400);
     window->makeCurrent();
+
+    GLFWwindow *handle = window->getHandle();
+
+    glfwSetInputMode(handle, GLFW_STICKY_KEYS, GLFW_TRUE);
 }
 
 bool Context::keyPressed(key k) {
@@ -56,6 +60,10 @@ void Context::setViewport(int width, int height) {
     glViewport(0, 0, viewportWidth, viewportHeight);
 }
 
+void Context::close() {
+    window->setShouldClose(true);
+}
+
 
 void Context::processInput() {
     Window::pollEvents();
@@ -63,5 +71,6 @@ void Context::processInput() {
     lockGuard_t g(inputLock);
 
     keys[key::ENTER] = window->keyPressed(GLFW_KEY_ENTER);
+    keys[key::SPACE] = window->keyPressed(GLFW_KEY_SPACE);
 }
 

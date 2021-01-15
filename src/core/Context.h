@@ -40,6 +40,9 @@ public:
     int getVPHeight();
     void setViewport(int width, int height);
 
+    // Sets the shouldCLose flag on the window
+    void close();
+
     void processInput();
 
 };
