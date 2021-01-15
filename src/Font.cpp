@@ -4,6 +4,7 @@
 #include <cmath>
 #include <fstream>
 #include <exception>
+#include <iostream>
 
 #include "core/error.h"
 #include "core/debug.h"
@@ -158,19 +159,22 @@ Font::wrapResult Font::wrapText(const std::string &text, int wrapWidth, int line
     result.x = x;
     result.y = y;
     result.width = 0;
-    result.height = 0;
+    result.height = 0; 
     result.text.reserve(text.size() + 5);
     int vertStep = lineGap + getHeight();
     int mostWidth = 0;
     for (char c : text) {
         int nWidth = getWidth(c);
-        if (nWidth + x > wrapWidth) {
-            if (x > mostWidth) {
-                mostWidth = x;
+        if (nWidth + result.x > wrapWidth || c == '\n') {
+            if (result.x > mostWidth) {
+                mostWidth = result.x;
             }
             result.text.push_back('\n');
             result.x = 0;
             result.y += vertStep;
+            if (c == '\n') {
+                continue;
+            }
         }
         result.x += nWidth;
         result.text.push_back(c);
@@ -192,7 +196,7 @@ void Font::bindAtlas() {
     atlas.bind();
 }
 
-void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int> &indices, const std::string &str, int xi) const {
+void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int> &indices, const std::string &str, int xi, int lineGap) const {
     EOE_ASSERT(str.size() > 0);
 
     vertices.reserve(vertices.size() + str.size() * 4 * 2 + str.size() * 4);
@@ -217,7 +221,7 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
     float x = nStartX + xofs;
     float y = nStartY;
 
-    const float yStep = static_cast<float>(cellHeight) / vHeight * 2 * -1;
+    const float yStep = static_cast<float>(cellHeight + lineGap) / vHeight * 2 * -1;
 
     for (unsigned char c : str) {
         if (c == '\n') {
@@ -247,7 +251,7 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
     }
 }
 
-Mesh Font::genMesh(const std::string &str, int xofs) const {
+Mesh Font::genMesh(const std::string &str, int xofs, int lineGap) const {
     Mesh mesh;
 
     if (str.size() == 0) {
@@ -256,7 +260,7 @@ Mesh Font::genMesh(const std::string &str, int xofs) const {
 
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
-    getRenderData(vertices, indices, str, xofs);
+    getRenderData(vertices, indices, str, xofs, lineGap);
 
     mesh.setVertices(vertices.size(), vertices.data());
     mesh.setIndices(indices.size(), indices.data());

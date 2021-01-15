@@ -12,7 +12,7 @@ scn::Begin::Begin(Game &game):
     game(&game),
     proc(game, game.getContext())
 {
-    proc.getTextbox()->setWrappingWidth(100);
+    proc.getTextbox()->setWrappingWidth(game.getContext().getWindow().getFBWidth());
 }
 
 void scn::Begin::renderNorm(CharRend::renderObj &obj) {
@@ -26,7 +26,7 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 
     Font::wrapResult wrap = font->wrapText(obj.text, obj.wrapWidth, 0, obj.x, obj.y);
 
-    Mesh m = font->genMesh(wrap.text, obj.x);
+    Mesh m = font->genMesh(wrap.text, obj.x, 0);
     Matrix mat;
     mat.width = wrap.width;
     mat.height = wrap.height;
@@ -43,7 +43,7 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 void scn::Begin::script() {
     typedef TextProc prc;
     proc.setCharCooldown(50);
-    proc << memb(renderNorm) << "I really kinda' like cheese for some reason." << prc::enter;
+    proc << memb(renderNorm) << "I really kinda' like cheese for some reason.\nThere's just something about it..." << prc::enter;
 }
 
 void scn::Begin::render() {

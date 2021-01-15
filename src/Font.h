@@ -54,11 +54,11 @@ public:
 
     void getRenderData(
         std::vector<float> &vertices, std::vector<unsigned int> &indices,
-        const std::string &str, int xi
+        const std::string &str, int xi, int lineGap
     ) const;
 
     // Will make newline when encountering \n char.
-    Mesh genMesh(const std::string &str, int xi) const;
+    Mesh genMesh(const std::string &str, int xi, int lineGap) const;
 };
 
 #endif

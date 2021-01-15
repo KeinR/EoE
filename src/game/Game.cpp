@@ -14,7 +14,7 @@
 #include "scenes/Begin.h"
 
 Game::Game(const ctx_t &c): c(c) {
-    fonts.consolas = std::make_shared<Font>("data/fonts/consolas18.bff");
+    fonts.consolas = std::make_shared<Font>("data/fonts/couriernew20.bff");
     shaders.text = std::make_shared<Shader>(*c,
         "data/shaders/text.vert",
         "data/shaders/text.frag"
@@ -59,6 +59,8 @@ Game::shaders_t &Game::getShaders() {
 
 void Game::start() {
     c->getWindow().makeCurrent();
+    c->getWindow().setSize(700, 600);
+    c->getWindow().setTitle("The Epic of Enkidu");
     c->getWindow().show();
 
     glActiveTexture(GL_TEXTURE0);
@@ -70,7 +72,9 @@ void Game::start() {
     beginScript();
 
     while (!c->getWindow().shouldClose()) {
-        c->setViewport(400, 400);
+        int winWidth, winHeight;
+        c->getWindow().getFBSize(winWidth, winHeight);
+        c->setViewport(winWidth, winHeight);
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 

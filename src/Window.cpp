@@ -51,8 +51,28 @@ void Window::getMousePos(float &x, float &y) {
     y = static_cast<float>(by);
 }
 
-void Window::getSize(int &w, int &h) {
+void Window::getFBSize(int &w, int &h) {
     glfwGetFramebufferSize(handle, &w, &h);
+}
+
+int Window::getFBWidth() {
+    int w;
+    glfwGetFramebufferSize(handle, &w, NULL);
+    return w;
+}
+
+int Window::getFBHeight() {
+    int h;
+    glfwGetFramebufferSize(handle, NULL, &h);
+    return h;
+}
+
+void Window::setSize(int w, int h) {
+    glfwSetWindowSize(handle, w, h);
+}
+
+void Window::setTitle(const char *str) {
+    glfwSetWindowTitle(handle, str);
 }
 
 bool Window::shouldClose() {

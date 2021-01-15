@@ -25,7 +25,12 @@ public:
     bool keyPressed(int e);
 
     void getMousePos(float &x, float &y);
-    void getSize(int &w, int &h);
+    void getFBSize(int &w, int &h);
+    int getFBWidth();
+    int getFBHeight();
+
+    void setSize(int w, int h);
+    void setTitle(const char *str);
 
     bool shouldClose();
 
