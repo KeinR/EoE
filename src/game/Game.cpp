@@ -67,22 +67,6 @@ void Game::start() {
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
 
-    Textbox box(*c);
-    box.pushFunc([this](const CharRendF::renderObj &obj)->void{
-        c->useShader(shaders.text);
-        auto &font = fonts.consolas;
-        font->bindAtlas();
-        Mesh m = font->genMesh(obj.text);
-        Matrix mat;
-        mat.width = font->getWidth(obj.text);
-        mat.height = font->getLinesHeight(obj.text);
-        mat.x = obj.x + mat.width / 2.0f;
-        mat.y = obj.y + mat.height / 2.0f;
-        mat.load(*obj.c);
-        m.render();
-    });
-    box.pushString("foo");
-
     beginScript();
 
     while (!c->getWindow().shouldClose()) {
@@ -91,10 +75,14 @@ void Game::start() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         syncScene();
-        scene->render();
+        if (scene) {
+            scene->render();
+        }
 
         c->getWindow().swapBuffers();
         c->processInput();
     }
+
+    joinScript();
 }
 

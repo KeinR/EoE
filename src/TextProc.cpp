@@ -7,23 +7,24 @@
 #include "core/Context.h"
 #include "core/keys.h"
 
-TextProc::TextProc(Context &c):
-    TextProc(std::make_shared<Textbox>(c))
+TextProc::TextProc(Script &parent, Context &c):
+    TextProc(parent, std::make_shared<Textbox>(c))
 {
 }
-TextProc::TextProc(const output_t &out):
+TextProc::TextProc(Script &parent, const output_t &out):
+    parent(&parent),
     out(out),
     charCooldownMillis(0)
 {
 }
 
-void TextProc::sleep(int millis) {
-    std::this_thread::sleep_for(std::chrono::milliseconds(millis));
+TextProc::output_t TextProc::getTextbox() {
+    return out;
 }
 
 void TextProc::waitEnter() {
     while (!out->getContext()->keyPressed(key::ENTER)) {
-        sleep(1);
+        parent->wait(1);
     }
 }
 
@@ -45,7 +46,7 @@ TextProc &TextProc::operator<<(const std::string &str) {
     for (char c : str) {
         out->pushChar(c);
         if (c != ' ') {
-            Script::wait(charCooldownMillis);
+            parent->wait(charCooldownMillis);
         }
     }
     return *this;

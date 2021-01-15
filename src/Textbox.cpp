@@ -6,7 +6,7 @@ Textbox::Textbox(Context &c):
     c(&c),
     margin(0), 
     lineGap(0),
-    width(0)
+    wrapWidth(0)
 {
 }
 
@@ -22,6 +22,11 @@ void Textbox::setMargin(int m) {
 void Textbox::setLineGap(int v) {
     lockGuard_t g(lock);
     lineGap = v;
+}
+
+void Textbox::setWrappingWidth(int w) {
+    lockGuard_t g(lock);
+    wrapWidth = w;
 }
 
 void Textbox::pushChar(char c) {
@@ -55,6 +60,7 @@ void Textbox::render() {
     obj.c = c;
     obj.x = margin;
     obj.y = margin;
+    obj.wrapWidth = wrapWidth - margin * 2;
     obj.text.reserve(text.size());
 
     for (functions_t::iterator fit = functions.begin(); fit != functions.end();) {

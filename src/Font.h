@@ -27,6 +27,16 @@ private:
 
 public:
 
+    struct wrapResult {
+        std::string text;
+        int width;
+        int height;
+        int x;
+        int y;
+        float cx;
+        float cy;
+    };
+
     // Binary Font Format (.bff) font, Codehead's
     // Bitmap Font Generator's native output. 
     Font(const std::string &path);
@@ -38,16 +48,17 @@ public:
     int getLinesWidth(const std::string &str) const;
     int getHeight() const;
     int getLinesHeight(const std::string &str) const;
+    wrapResult wrapText(const std::string &text, int wrapWidth, int lineGap, int x, int y);
 
     void bindAtlas();
 
     void getRenderData(
         std::vector<float> &vertices, std::vector<unsigned int> &indices,
-        const std::string &str
+        const std::string &str, int xi
     ) const;
 
     // Will make newline when encountering \n char.
-    Mesh genMesh(const std::string &str) const;
+    Mesh genMesh(const std::string &str, int xi) const;
 };
 
 #endif

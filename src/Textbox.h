@@ -22,7 +22,7 @@ private:
     Context *c;
     int margin;
     int lineGap;
-    int width;
+    int wrapWidth;
     std::string text;
     functions_t functions;
     std::mutex lock;
@@ -34,6 +34,7 @@ public:
 
     void setMargin(int m);
     void setLineGap(int g);
+    void setWrappingWidth(int w);
 
     void pushChar(char c);
     void pushString(const std::string &str);

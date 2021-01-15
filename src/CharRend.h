@@ -16,6 +16,7 @@ public:
         std::string text;
         float x;
         float y;
+        float wrapWidth;
     };
 
     virtual ~CharRend() = 0;

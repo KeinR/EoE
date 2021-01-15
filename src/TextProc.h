@@ -5,6 +5,8 @@
 
 #include "Textbox.h"
 
+class Script;
+
 class TextProc {
 public:
     typedef std::shared_ptr<Textbox> output_t;
@@ -12,13 +14,15 @@ public:
         enter
     };
 private:
+    Script *parent;
     output_t out;
     int charCooldownMillis;
-    void sleep(int millis);
 public:
     // Construxts own textbox
-    TextProc(Context &c);
-    TextProc(const output_t &out);
+    TextProc(Script &parent, Context &c);
+    TextProc(Script &parent, const output_t &out);
+
+    output_t getTextbox();
 
     void waitEnter();
     void setCharCooldown(int millis);

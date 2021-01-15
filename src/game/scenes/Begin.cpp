@@ -10,8 +10,9 @@
 
 scn::Begin::Begin(Game &game):
     game(&game),
-    proc(game.getContext())
+    proc(game, game.getContext())
 {
+    proc.getTextbox()->setWrappingWidth(100);
 }
 
 void scn::Begin::renderNorm(CharRend::renderObj &obj) {
@@ -21,21 +22,27 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
     game->getContext().useShader(shader);
     font->bindAtlas();
 
-    Mesh m = font->genMesh(obj.text);
+    shader->set4f("color", 0.7, 0.7, 0.7, 1);
+
+    Font::wrapResult wrap = font->wrapText(obj.text, obj.wrapWidth, 0, obj.x, obj.y);
+
+    Mesh m = font->genMesh(wrap.text, obj.x);
     Matrix mat;
-    mat.width = font->getWidth(obj.text);
-    mat.height = font->getLinesHeight(obj.text);
-    mat.x = obj.x + mat.width / 2.0f;
-    mat.y = obj.y + mat.height / 2.0f;
+    mat.width = wrap.width;
+    mat.height = wrap.height;
+    mat.x = wrap.cx;
+    mat.y = wrap.cy;
     mat.load(game->getContext());
     m.render();
+
+    obj.x = wrap.x;
+    obj.y = wrap.y;
+
 }
 
 void scn::Begin::script() {
     typedef TextProc prc;
-    proc.setCharCooldown(10);
-    std::cout << "starting scipt\n";
-    // auto f = CharRendF::render_t(std::bind(&Begin::renderNorm, this, std::placeholders::_1));
+    proc.setCharCooldown(50);
     proc << memb(renderNorm) << "I really kinda' like cheese for some reason." << prc::enter;
 }
 
