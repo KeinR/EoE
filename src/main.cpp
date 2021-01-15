@@ -10,8 +10,14 @@
 #define EXIT_OK 0
 #define EXIT_ERR 1
 
-
 static void glfwErrCallback(int code, const char *desc);
+
+class glfwGuard {
+public:
+    ~glfwGuard() {
+        glfwTerminate();
+    }
+};
 
 int main(int argc, char **argv) {
 
@@ -21,6 +27,9 @@ int main(int argc, char **argv) {
         std::cerr << "Failed to init GLFW\n";
         return EXIT_ERR;
     }
+
+    // Prevents the need of GOTOs and the like
+    glfwGuard g;
 
     std::shared_ptr<Context> c = std::make_shared<Context>();
 
@@ -37,18 +46,19 @@ int main(int argc, char **argv) {
     }
 
     try {
+        // Make sure that we have resources on the local path.
+        // Resources should be with executable
         namespace fs = std::filesystem;
         fs::current_path(fs::path(argv[0]).parent_path());
+
         Game game(c);
         game.start();
     } catch (std::exception &e) {
         std::cerr << "Terminted - " << e.what() << '\n';
+        return EXIT_ERR;
     }
 
-    // Terminate before GLFW
-    c.reset();
-
-    glfwTerminate();
+    // Context is destructed before glfw
 
     return EXIT_OK;
 }

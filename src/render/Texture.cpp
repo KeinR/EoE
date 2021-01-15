@@ -13,8 +13,8 @@
 constexpr Texture::tparam Texture::defaultParams{
     GL_CLAMP_TO_EDGE,
     GL_CLAMP_TO_EDGE,
-    GL_LINEAR,
-    GL_LINEAR
+    GL_NEAREST,
+    GL_NEAREST
 };
 
 Texture::Texture() {

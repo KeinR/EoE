@@ -14,7 +14,7 @@
 #include "scenes/Begin.h"
 
 Game::Game(const ctx_t &c): c(c), endFlag(false) {
-    fonts.consolas = std::make_shared<Font>("data/fonts/couriernew20.bff");
+    fonts.consolas = std::make_shared<Font>("data/fonts/hackregular.bff");
     shaders.text = std::make_shared<Shader>(*c,
         "data/shaders/text.vert",
         "data/shaders/text.frag"

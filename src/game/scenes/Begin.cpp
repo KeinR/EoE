@@ -6,7 +6,7 @@
 #include "../../render/Matrix.h"
 #include "../../render/Mesh.h"
 
-#define memb(FUNC) std::bind(&Begin::FUNC, this, std::placeholders::_1)
+// #define memb(FUNC) std::bind(&Begin::FUNC, this, std::placeholders::_1)
 
 scn::Begin::Begin(Game &game):
     game(&game),
@@ -16,16 +16,11 @@ scn::Begin::Begin(Game &game):
 }
 
 void scn::Begin::renderNorm(CharRend::renderObj &obj) {
-    Game::shader_t &shader = game->getShaders().text;
     Game::font_t &font = game->getFonts().consolas;
 
-    game->getContext().useShader(shader);
     font->bindAtlas();
 
-    shader->set4f("color", 0.7, 0.7, 0.7, 1);
-
     Font::wrapResult wrap = font->wrapText(obj.text, obj.wrapWidth, 0, obj.x, obj.y);
-
     Mesh m = font->genMesh(wrap.text, obj.x, 0);
     Matrix mat;
     mat.width = wrap.width;
@@ -42,8 +37,25 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 
 void scn::Begin::script() {
     typedef TextProc prc;
+    typedef CharRendF::render_t func_t;
     proc.setCharCooldown(50);
-    proc << memb(renderNorm) << "I really kinda' like cheese for some reason.\\\nThere's just something about it..." << prc::input;
+
+    Game::shader_t &shader = game->getShaders().text;
+    Context &c = game->getContext();
+
+    // TODO: Find a way of doing this that isn't so moronic
+#define COLOR(RED, GREEN, BLUE, ALPHA)\
+    [this, &shader, &c](CharRend::renderObj &obj)->void{\
+        c.useShader(shader);\
+        shader->set4f("color", RED, BLUE, GREEN, ALPHA);\
+        this->renderNorm(obj);\
+    };
+
+    func_t white = COLOR(0.8, 0.8, 0.8, 1);
+    func_t red = COLOR(1, 0.2, 0.2, 1);
+
+    proc << white << "There was once a time when " << red << "GIANTS" << white <<
+    "\\ ruled the land.\nAnd it was not all that great..." << prc::input;
 }
 
 void scn::Begin::render() {

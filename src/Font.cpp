@@ -8,6 +8,7 @@
 #include "core/error.h"
 #include "core/debug.h"
 #include "render/Mesh.h"
+#include "lib/opengl.h"
 
 // static constexpr int VERTEX_SIZE = 8;
 // Knock off colors and we get...
@@ -21,7 +22,14 @@ static int readInt(std::ifstream &file) {
             (static_cast<unsigned int>(file.get()) << 24);
 }
 
-Font::Font(const std::string &path) {
+Font::Font(const std::string &path):
+    atlas({
+        GL_CLAMP_TO_EDGE,
+        GL_CLAMP_TO_EDGE,
+        GL_NEAREST,
+        GL_NEAREST
+    })
+{
 
     failed = true;
 
@@ -178,13 +186,20 @@ Font::wrapResult Font::wrapText(const std::string &text, int wrapWidth, int line
         result.x += nWidth;
         result.text.push_back(c);
     }
+    if (result.x > mostWidth) {
+        mostWidth = result.x;
+    }
+    result.width = mostWidth;
+    result.cx = result.width / 2.0f;
+    /*
     if (result.y == y) {
         result.width = result.x - x;
-        result.cx = x + result.width / 2.0f;
+        result.cx = result.x / 2.0f;
     } else {
         result.width = mostWidth;
         result.cx = result.width / 2.0f;
     }
+    */
     result.height = result.y - y + getHeight();
     result.cy = y + result.height / 2.0f;
 
@@ -201,23 +216,24 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
     vertices.reserve(vertices.size() + str.size() * 4 * 2 + str.size() * 4);
     indices.reserve(indices.size() + str.size() * 3 * 2);
 
-    const int vWidth = getLinesWidth(str);
-    const int vHeight = getLinesHeight(str);
-
-    const float scaleX = static_cast<float>(cellWidth) / vWidth;
-    const float scaleY = static_cast<float>(cellHeight) / vHeight;
-    const std::array<float, 8> quad = {
-        -scaleX, -scaleY,
-        -scaleX, scaleY,
-        scaleX, scaleY,
-        scaleX, -scaleY
-    };
-
-    const float nStartX = -1.0f + (getWidth(str[0]) + 0.5f) / vWidth;
-    const float xofs = static_cast<float>(xi) / vWidth;
+    int wp = xi;
+    for (char c : str) {
+        if (c == '\n') {
+            break;
+        }
+        wp += getWidth(c);
+    }
+    const float vWidth = std::max(wp, getLinesWidth(str));
+    const int vHeight = std::count(str.begin(), str.end(), '\n') * (lineGap + getHeight()) + getHeight(); 
+    
+    const float scaleY = static_cast<float>(getHeight()) / vHeight;
+    // TODO: ntext line offset of the first char in that line...
+    const float nStartX = -1.0f + (getWidth(str[0]) / 2.0f + 0.5f) / vWidth * 2;
+    // const float xofs = static_cast<float>(xi) / vWidth;
     const float nStartY = 1.0f - (getHeight() + 0.5f) / vHeight;
 
-    float x = nStartX + xofs;
+    float x = -1.0f + (getWidth(str[0]) / 2.0f + xi + 0.5f) / vWidth * 2;
+    // float x = nStartX;
     float y = nStartY;
 
     const float yStep = static_cast<float>(cellHeight + lineGap) / vHeight * 2 * -1;
@@ -229,6 +245,15 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
         } else if (c < startChar || c > endChar) {
             c = startChar;
         } else {
+            int cw = getWidth(c);
+            const float scaleX = static_cast<float>(cw) / vWidth;
+            const std::array<float, 8> quad = {
+                -scaleX, -scaleY,
+                -scaleX, scaleY,
+                scaleX, scaleY,
+                scaleX, -scaleY
+            };
+
             unsigned int vert = vertices.size() / VERTEX_SIZE;
             int index = c - startChar;
             float tx = index % rowSize * texX;
@@ -236,8 +261,7 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
             for (int i = 0; i < 4; i++) {
                 vertices.insert(vertices.end(), {
                     quad[i * 2] + x, quad[i * 2 + 1] + y,
-                    texBase[i * 2] + tx, texBase[i * 2 + 1] + ty//,
-                    // color[0], color[1], color[2], color[3]
+                    texBase[i * 2] + tx, texBase[i * 2 + 1] + ty
                 });
             }
             indices.insert(indices.end(), {
@@ -245,7 +269,7 @@ void Font::getRenderData(std::vector<float> &vertices, std::vector<unsigned int>
                 vert + 0, vert + 2, vert + 3
             });
 
-            x += static_cast<float>(getWidth(c)) / vWidth * 2;
+            x += static_cast<float>(cw) / vWidth * 2;
         }
     }
 }
