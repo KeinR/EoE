@@ -1,9 +1,13 @@
 #ifndef WINDOW_H_INCLUDED
 #define WINDOW_H_INCLUDED
 
+#include <unordered_map>
+
+#include "WindowEventCallback.h"
+
 struct GLFWwindow;
 
-class Window {
+class Window: private WindowEventCallback {
     GLFWwindow *handle;
 
     void deInit();
@@ -12,6 +16,8 @@ public:
 
     Window(const char *title, int width, int height);
     ~Window();
+
+    void registerCallback(WindowEventCallback &callback);
 
     bool valid();
 

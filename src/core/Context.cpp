@@ -5,7 +5,10 @@
 
 Context::Context():
     viewportWidth(0),
-    viewportHeight(0)
+    viewportHeight(0),
+    mouseX(0),
+    mouseY(0),
+    leftMousePressed(false)
 {
     glfwDefaultWindowHints();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -18,9 +21,39 @@ Context::Context():
     window = std::make_unique<Window>("[no title]", 400, 400);
     window->makeCurrent();
 
-    GLFWwindow *handle = window->getHandle();
 
-    glfwSetInputMode(handle, GLFW_STICKY_KEYS, GLFW_TRUE);
+    float x, y;
+    window->getMousePos(x, y);
+    mouseX.store(x);
+    mouseY.store(y);
+    window->registerCallback(*this);
+}
+
+void Context::keyEvent(int k, int action, int mods) {
+    lockGuard_t g(inputLock);
+    keys[static_cast<key>(k)] = action != GLFW_RELEASE;
+}
+void Context::mouseMoveEvent(float x, float y) {
+    mouseX.store(x);
+    mouseY.store(y);
+}
+void Context::mouseButtonEvent(int button, int action, int mods) {
+    lockGuard_t g(inputLock);
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        leftMousePressed.store(action == GLFW_PRESS);
+    }
+}
+
+float Context::getMouseX() {
+    return mouseX.load();
+}
+
+float Context::getMouseY() {
+    return mouseY.load();
+}
+
+bool Context::isLeftMousePressed() {
+    return leftMousePressed.load();
 }
 
 bool Context::keyPressed(key k) {
