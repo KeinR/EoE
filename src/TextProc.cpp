@@ -106,6 +106,9 @@ TextProc &TextProc::operator<<(command c) {
             seekingInput = false;
             waitInput();
             break;
+        case clear:
+            out->clear();
+            break;
     }
     return *this;
 }

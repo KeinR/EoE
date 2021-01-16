@@ -11,7 +11,8 @@ class TextProc {
 public:
     typedef std::shared_ptr<Textbox> output_t;
     enum command {
-        input
+        input,
+        clear
     };
 private:
     Script *parent;

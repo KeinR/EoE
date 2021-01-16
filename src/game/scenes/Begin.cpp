@@ -92,7 +92,7 @@ void scn::Begin::renderNorm(CharRend::renderObj &obj) {
 }
 
 void scn::Begin::script() {
-    typedef TextProc prc;
+    typedef TextProc::command com;
     typedef CharRendF::render_t func_t;
     typedef Textbox::event_t event_t;
     proc.setCharCooldown(50);
@@ -115,12 +115,11 @@ void scn::Begin::script() {
     proc << memb(renderNorm);
 
     proc << white << "There was once a time when " << red << "GIANTS" << white <<
-    "\\ ruled the land.\nAnd it was not all that great..." << prc::input <<
-R"(
-Across the sea and to the Middle East.\
+    "\\ ruled the land.\nAnd it was not all that great..." << com::input <<
+R"(Across the sea and to the Middle East.\
 In the cradle of civilization.\
 There once was a great man who went on a great journey.\
-Enduring even the greatest of obsticles...\)";
+Enduring even the greatest of obsticles...\)" << com::clear;
 
     int score = 0;
     std::function<void()> add = [&score]()->void{
@@ -132,10 +131,10 @@ Enduring even the greatest of obsticles...\)";
 
     Option opt(c, proc.getTextbox());
     opt.add("I am", [this]()->void{
-        proc << "And so sure will be your end..." << prc::input;
+        proc << "And so sure will be your end..." << com::input;
     });
     opt.add("I am not", [this]()->void{
-        proc << "And nor are you sane" << prc::input;
+        proc << "And nor are you sane" << com::input;
     });
     opt.run();
 

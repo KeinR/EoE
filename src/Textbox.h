@@ -50,6 +50,9 @@ public:
     void pushFunc(const CharRendF::render_t &func);
     void pushEvent(const event_t &e);
 
+    // All but first func
+    void clear();
+
     // Main thread
     void render();
 };

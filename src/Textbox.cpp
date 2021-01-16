@@ -70,6 +70,25 @@ void Textbox::pushEvent(const event_t &e) {
     );
 }
 
+void Textbox::clear() {
+    lockGuard_t g(lock);
+
+    if (!functions.empty()) {
+        lastFunc = functions.begin()->second;
+    } else {
+        // Just to be sure
+        lastFunc.reset();
+    }
+
+    functions.clear();
+    events.clear();
+    text.clear();
+
+    if (lastFunc) {
+        functions[0] = lastFunc;
+    }
+}
+
 void Textbox::render() {
     lockGuard_t g(lock);
 
